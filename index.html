@@ -380,9 +380,55 @@
         <div id="content"></div>
     </div>
     <script>
+        // Mapping of incoming data fields to page elements
+        const metricMappings = {
+            'Patient Information': {
+                'Name': 'Name',
+                'Age': 'Age',
+                'Gender': 'Gender',
+                'MRN': 'MRN'
+            },
+            'Health Systems': {
+                'EHR Status': 'EHR Status',
+                'Lab System': 'Lab System',
+                'Imaging': 'Imaging System',
+                'Last Sync': 'Last Updated'
+            },
+            'Medications': {
+                'Active Medications': 'Active Medications',
+                'Recent Changes': 'Recent Changes',
+                'Last Updated': 'Last Updated',
+                'Pending Refills': 'Pending Refills'
+            },
+            'Recent Events': {
+                'Hospital Visits': 'Hospital Visits',
+                'Lab Tests': 'Lab Tests',
+                'Appointments': 'Appointments',
+                'Last Event': 'Last Event'
+            },
+            'Vital Signs': {
+                'Blood Pressure': 'Blood Pressure',
+                'Heart Rate': 'Heart Rate',
+                'Temperature': 'Temperature',
+                'O2 Saturation': 'O2 Saturation'
+            },
+            'Conditions': {
+                'Active Conditions': 'Current Conditions',
+                'High Priority': 'Priority Cases',
+                'Under Treatment': 'In Treatment',
+                'Last Assessment': 'Last Review'
+            },
+            'Recent Calls': {
+                'Total Calls': 'Total Calls',
+                'Missed Calls': 'Missed',
+                'Average Duration': 'Average Duration',
+                'Last Call': 'Last Contact'
+            }
+        };
+
         // Function to update specific metrics in existing cards
         function updateDashboard(data) {
-            console.log('Received data:', data); // Debug log
+            console.log('Received data:', data);
             if (!Array.isArray(data)) return;
             
             data.forEach(section => {
@@ -400,7 +446,7 @@
                 }
                 
                 if (!card) {
-                    console.log('Card not found for:', cardTitle); // Debug log
+                    console.log('Card not found for:', cardTitle);
                     return;
                 }
                 
@@ -420,17 +466,19 @@
                     }
                 }
                 
-                // Update metrics
-                if (section.metrics) {
+                // Update metrics using the mapping
+                if (section.metrics && metricMappings[cardTitle]) {
+                    const mapping = metricMappings[cardTitle];
                     Object.entries(section.metrics).forEach(([key, value]) => {
+                        const pageKey = mapping[key] || key; // Use mapped key or original if no mapping
                         const items = card.querySelectorAll('.list-item');
                         items.forEach(item => {
                             const titleEl = item.querySelector('.list-item-title');
-                            if (titleEl && titleEl.textContent.trim() === key) {
+                            if (titleEl && titleEl.textContent.trim() === pageKey) {
                                 const subtitleEl = item.querySelector('.list-item-subtitle');
                                 if (subtitleEl) {
                                     subtitleEl.textContent = value;
-                                    console.log('Updated metric:', key, 'to:', value); // Debug log
+                                    console.log('Updated metric:', pageKey, 'to:', value);
                                 }
                             }
                         });
@@ -450,9 +498,9 @@
             const dataParam = getQueryParam('data');
             if (dataParam) {
                 try {
-                    console.log('URL parameter found:', dataParam); // Debug log
+                    console.log('URL parameter found:', dataParam);
                     const decodedData = JSON.parse(decodeURIComponent(dataParam));
-                    console.log('Decoded data:', decodedData); // Debug log
+                    console.log('Decoded data:', decodedData);
                     updateDashboard(decodedData);
                 } catch (error) {
                     console.error('Error parsing data:', error);
