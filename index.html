@@ -380,6 +380,19 @@
         <div id="content"></div>
     </div>
     <script>
+        // Add a visible debug area at the bottom of the page
+        const debugDiv = document.createElement('div');
+        debugDiv.style.margin = '20px';
+        debugDiv.style.padding = '20px';
+        debugDiv.style.backgroundColor = '#f0f0f0';
+        debugDiv.style.fontFamily = 'monospace';
+        document.body.appendChild(debugDiv);
+
+        function debugLog(message, data) {
+            console.log(message, data);
+            debugDiv.innerHTML += `<div>${message}: ${JSON.stringify(data)}</div>`;
+        }
+
         // Mapping of incoming data fields to page elements
         const metricMappings = {
             'Patient Information': {
@@ -428,57 +441,64 @@
 
         // Function to update specific metrics in existing cards
         function updateDashboard(data) {
-            console.log('Received data:', data);
-            if (!Array.isArray(data)) return;
+            debugLog('Starting dashboard update with data', data);
+            if (!Array.isArray(data)) {
+                debugLog('Data is not an array', typeof data);
+                return;
+            }
             
             data.forEach(section => {
+                debugLog('Processing section', section);
+                
                 // Find the existing card for this section
                 const cardTitle = section.title;
-                const cards = document.querySelectorAll('.card');
-                let card = null;
+                debugLog('Looking for card with title', cardTitle);
                 
-                for (let c of cards) {
+                // Get all cards and log their titles
+                const allCards = document.querySelectorAll('.card');
+                const cardTitles = Array.from(allCards).map(c => {
+                    const title = c.querySelector('.card-title');
+                    return title ? title.textContent.trim() : 'no title';
+                });
+                debugLog('Found cards with titles', cardTitles);
+                
+                let card = null;
+                for (let c of allCards) {
                     const titleEl = c.querySelector('.card-title');
-                    if (titleEl && titleEl.textContent.trim() === cardTitle) {
+                    const currentTitle = titleEl ? titleEl.textContent.trim() : '';
+                    debugLog('Checking card title', currentTitle);
+                    if (currentTitle === cardTitle) {
                         card = c;
+                        debugLog('Found matching card', cardTitle);
                         break;
                     }
                 }
                 
                 if (!card) {
-                    console.log('Card not found for:', cardTitle);
+                    debugLog('No card found for', cardTitle);
                     return;
-                }
-                
-                // Update status if provided
-                if (section.status) {
-                    const statusBadge = card.querySelector('.status-badge');
-                    if (statusBadge) {
-                        statusBadge.textContent = section.status;
-                    }
-                }
-                
-                // Update description if provided
-                if (section.description) {
-                    const description = card.querySelector('.card-description');
-                    if (description) {
-                        description.textContent = section.description;
-                    }
                 }
                 
                 // Update metrics using the mapping
                 if (section.metrics && metricMappings[cardTitle]) {
                     const mapping = metricMappings[cardTitle];
+                    debugLog('Using mapping for section', mapping);
+                    
                     Object.entries(section.metrics).forEach(([key, value]) => {
-                        const pageKey = mapping[key] || key; // Use mapped key or original if no mapping
+                        const pageKey = mapping[key] || key;
+                        debugLog('Looking for metric', { original: key, mapped: pageKey, value: value });
+                        
                         const items = card.querySelectorAll('.list-item');
                         items.forEach(item => {
                             const titleEl = item.querySelector('.list-item-title');
-                            if (titleEl && titleEl.textContent.trim() === pageKey) {
+                            const currentTitle = titleEl ? titleEl.textContent.trim() : '';
+                            debugLog('Checking list item', currentTitle);
+                            
+                            if (currentTitle === pageKey) {
                                 const subtitleEl = item.querySelector('.list-item-subtitle');
                                 if (subtitleEl) {
+                                    debugLog('Updating value', { key: pageKey, value: value });
                                     subtitleEl.textContent = value;
-                                    console.log('Updated metric:', pageKey, 'to:', value);
                                 }
                             }
                         });
@@ -490,33 +510,39 @@
         // Function to parse URL parameters
         function getQueryParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(param);
+            const value = urlParams.get(param);
+            debugLog('URL parameter', { param: param, value: value });
+            return value;
         }
 
         // Check for data in URL parameters on page load
         window.addEventListener('load', function() {
+            debugLog('Page loaded, checking for data parameter', null);
             const dataParam = getQueryParam('data');
             if (dataParam) {
                 try {
-                    console.log('URL parameter found:', dataParam);
+                    debugLog('Found data parameter', dataParam);
                     const decodedData = JSON.parse(decodeURIComponent(dataParam));
-                    console.log('Decoded data:', decodedData);
+                    debugLog('Decoded data', decodedData);
                     updateDashboard(decodedData);
                 } catch (error) {
-                    console.error('Error parsing data:', error);
+                    debugLog('Error parsing data', error.message);
                 }
+            } else {
+                debugLog('No data parameter found', null);
             }
         });
 
         // Listen for postMessage events
         window.addEventListener('message', function(event) {
+            debugLog('Received message event', event.data);
             try {
                 const data = event.data;
                 if (data && data.data) {
                     updateDashboard(data.data);
                 }
             } catch (error) {
-                console.error('Error handling message:', error);
+                debugLog('Error handling message', error.message);
             }
         });
     </script>
