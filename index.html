@@ -6,377 +6,110 @@
     <title>Health Context Report</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/inter/3.19.3/inter.css" rel="stylesheet">
     <style>
-        :root {
-            /* Color System */
-            --color-background: #f8fafc;
-            --color-surface: #ffffff;
-            --color-primary: #2563eb;
-            --color-destructive: #ef4444;
-            --color-success: #10b981;
-            --color-text: #1e293b;
-            --color-text-muted: #64748b;
-            --color-border: #e2e8f0;
-            --color-accent-bg: #f1f5f9;
-            
-            /* Typography */
-            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            
-            /* Elevation */
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-            
-            /* Layout */
-            --container-width: 64rem;
-            --radius-lg: 0.75rem;
-            --radius-md: 0.5rem;
-        }
-
-        /* Base Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: var(--font-family);
-            background: var(--color-background);
-            color: var(--color-text);
-            line-height: 1.5;
-            -webkit-font-smoothing: antialiased;
+            font-family: 'Inter', system-ui, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f8fafc;
         }
 
         .container {
-            max-width: var(--container-width);
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 1.5rem;
         }
 
-        /* Header Styles */
-        .header {
-            margin-bottom: 2rem;
-        }
-
-        .header h1 {
-            font-size: 1.875rem;
-            font-weight: 700;
-            color: var(--color-text);
-            margin-bottom: 0.5rem;
-        }
-
-        .header p {
-            color: var(--color-text-muted);
-        }
-
-        /* Alert Component */
-        .alert {
-            background: #fef2f2;
-            border: 1px solid var(--color-destructive);
-            color: var(--color-destructive);
-            padding: 1rem;
-            border-radius: var(--radius-md);
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .alert-icon {
-            width: 1rem;
-            height: 1rem;
-        }
-
-        /* Card Grid */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
-            gap: 1.5rem;
-            margin-top: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
         }
 
-        /* Card Component */
         .card {
-            background: var(--color-surface);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--color-border);
-            overflow: hidden;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        .card-header {
-            padding: 1.5rem 1.5rem 1rem;
+        .metric {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f1f5f9;
+            border-radius: 6px;
         }
 
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--color-text);
-            margin-bottom: 0.25rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .card-description {
-            color: var(--color-text-muted);
+        .metric-label {
+            color: #64748b;
             font-size: 0.875rem;
         }
 
-        .card-content {
-            padding: 0 1.5rem 1.5rem;
-        }
-
-        /* List Items */
-        .list-item {
-            padding: 0.75rem;
-            background: var(--color-accent-bg);
-            border-radius: var(--radius-md);
-            margin-bottom: 0.75rem;
-        }
-
-        .list-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .list-item-title {
+        .metric-value {
+            font-size: 1.125rem;
             font-weight: 500;
-            margin-bottom: 0.25rem;
-        }
-
-        .list-item-subtitle {
-            font-size: 0.875rem;
-            color: var(--color-text-muted);
-        }
-
-        /* Status Badge */
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            background: #ecfdf5;
-            color: var(--color-success);
-        }
-
-        /* Responsive */
-        @media (max-width: 640px) {
-            .container {
-                padding: 1rem;
-            }
-            
-            .grid {
-                gap: 1rem;
-            }
-            
-            .card-header {
-                padding: 1rem 1rem 0.75rem;
-            }
-            
-            .card-content {
-                padding: 0 1rem 1rem;
-            }
+            color: #1e293b;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <h1>Health Context Report</h1>
-            <p>Last updated: January 17, 2025</p>
-        </header>
-
-        <!-- Alert -->
-        <div class="alert" role="alert">
-            <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="12" y1="8" x2="12" y2="12"/>
-                <line x1="12" y1="16" x2="12.01" y2="16"/>
-            </svg>
-            <div>
-                <strong>Critical Alert:</strong>
-                <span>Medication interaction detected</span>
-            </div>
-        </div>
-
-        <!-- Patient Information -->
-        <div class="card">
-            <div class="card-header">
-                <h2 class="card-title">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                        <circle cx="9" cy="7" r="4"/>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                    </svg>
-                    Patient Information
-                </h2>
-            </div>
-            <div class="card-content">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div>
-                        <p style="color: var(--color-text-muted); font-size: 0.875rem;">Name</p>
-                        <p style="font-size: 1.125rem;">Jane Smith</p>
-                    </div>
-                    <div>
-                        <p style="color: var(--color-text-muted); font-size: 0.875rem;">ID</p>
-                        <p style="font-size: 1.125rem;">P123456</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main Grid -->
-        <div class="grid">
-            <!-- Health Systems -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/>
-                            <line x1="7" y1="2" x2="7" y2="22"/>
-                            <line x1="17" y1="2" x2="17" y2="22"/>
-                            <line x1="2" y1="12" x2="22" y2="12"/>
-                            <line x1="2" y1="7" x2="7" y2="7"/>
-                            <line x1="2" y1="17" x2="7" y2="17"/>
-                            <line x1="17" y1="17" x2="22" y2="17"/>
-                            <line x1="17" y1="7" x2="22" y2="7"/>
-                        </svg>
-                        Health Systems
-                    </h2>
-                    <p class="card-description">Connected medical providers and systems</p>
-                </div>
-                <div class="card-content">
-                    <div class="list-item">
-                        <p class="list-item-title">VA Medical Center</p>
-                        <p class="list-item-subtitle">VA System</p>
-                        <span class="status-badge">Active</span>
-                    </div>
-                    <div class="list-item">
-                        <p class="list-item-title">City Hospital</p>
-                        <p class="list-item-subtitle">Civilian System</p>
-                        <span class="status-badge">Active</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Medications -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M10.5 2.5h3c2.5 0 5.5 4 5.5 8v10a2 2 0 0 1-2 2h-10a2 2 0 0 1-2-2v-10c0-4 3-8 5.5-8Z"/>
-                        </svg>
-                        Medications
-                    </h2>
-                    <p class="card-description">Active prescriptions and interactions</p>
-                </div>
-                <div class="card-content">
-                    <div class="list-item">
-                        <p class="list-item-title">Active Medications</p>
-                        <p class="list-item-subtitle">4 current prescriptions</p>
-                    </div>
-                    <div class="list-item">
-                        <p class="list-item-title">Pending Refills</p>
-                        <p class="list-item-subtitle">1 medication due for refill</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Health Events -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <polyline points="12 6 12 12 16 14"/>
-                        </svg>
-                        Recent Events
-                    </h2>
-                    <p class="card-description">Latest health events and appointments</p>
-                </div>
-                <div class="card-content">
-                    <div class="list-item">
-                        <p class="list-item-title">Annual Check-up</p>
-                        <p class="list-item-subtitle">Yesterday at 2:30 PM</p>
-                    </div>
-                    <div class="list-item">
-                        <p class="list-item-title">Blood Test Results</p>
-                        <p class="list-item-subtitle">2 days ago</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Vital Signs -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"/>
-                        </svg>
-                        Vital Signs
-                    </h2>
-                    <p class="card-description">Recent measurements and trends</p>
-                </div>
-                <div class="card-content">
-                    <div class="list-item">
-                        <p class="list-item-title">Blood Pressure</p>
-                        <p class="list-item-subtitle">120/80 • Within normal range</p>
-                    </div>
-                    <div class="list-item">
-                        <p class="list-item-title">Heart Rate</p>
-                        <p class="list-item-subtitle">72 bpm • Normal resting rate</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Conditions -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-                        </svg>
-                        Conditions
-                    </h2>
-                    <p class="card-description">Active conditions and management</p>
-                </div>
-                <div class="card-content">
-                    <div class="list-item">
-                        <p class="list-item-title">Type 2 Diabetes</p>
-                        <p class="list-item-subtitle">Managed - Last reviewed 2 weeks ago</p>
-                    </div>
-                    <div class="list-item">
-                        <p class="list-item-title">Hypertension</p>
-                        <p class="list-item-subtitle">Controlled - Monthly monitoring</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Calls -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                        </svg>
-                        Recent Calls
-                    </h2>
-                    <p class="card-description">Latest conversations and transcripts</p>
-                </div>
-                <div class="card-content">
-                    <div class="list-item">
-                        <p class="list-item-title">Medication Review</p>
-                        <p class="list-item-subtitle">January 15, 2025 - 15 minutes</p>
-                    </div>
-                    <div class="list-item">
-                        <p class="list-item-title">Follow-up Consultation</p>
-                        <p class="list-item-subtitle">January 10, 2025 - 20 minutes</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <h1>Health Context Report</h1>
+        <p id="lastUpdated">Last updated: <span id="timestamp">Loading...</span></p>
+        <div id="content" class="grid"></div>
     </div>
+
+    <script>
+        // Function to update the dashboard with new data
+        function updateDashboard(data) {
+            const content = document.getElementById('content');
+            const timestamp = document.getElementById('timestamp');
+            
+            // Update timestamp
+            timestamp.textContent = new Date().toLocaleString();
+            
+            // Clear existing content
+            content.innerHTML = '';
+            
+            // Add each section
+            if (Array.isArray(data)) {
+                data.forEach(section => {
+                    content.appendChild(createCard(section));
+                });
+            }
+        }
+
+        // Create a card element for each section
+        function createCard(data) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            const metrics = Object.entries(data.metrics || {})
+                .map(([key, value]) => `
+                    <div class="metric">
+                        <div class="metric-label">${key}</div>
+                        <div class="metric-value">${value}</div>
+                    </div>
+                `).join('');
+            
+            card.innerHTML = `
+                <h2>${data.title || 'Untitled'}</h2>
+                ${metrics}
+            `;
+            
+            return card;
+        }
+
+        // Handle incoming data
+        window.addEventListener('message', function(event) {
+            try {
+                const data = event.data;
+                if (data && data.data) {
+                    updateDashboard(data.data);
+                }
+            } catch (error) {
+                console.error('Error handling data:', error);
+            }
+        });
+    </script>
 </body>
 </html>
