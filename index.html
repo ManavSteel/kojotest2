@@ -380,36 +380,54 @@
         <div id="content"></div>
     </div>
     <script>
-        // Function to update the dashboard with new data
+        // Function to update specific metrics in existing cards
         function updateDashboard(data) {
-            const content = document.getElementById('content');
+            if (!Array.isArray(data)) return;
             
-            // Clear existing content
-            content.innerHTML = '';
-            
-            // Add each section
             data.forEach(section => {
-                const card = document.createElement('div');
-                card.className = 'card';
+                // Find the existing card for this section
+                const cardTitle = section.title;
+                const cardElements = document.querySelectorAll('.card-title');
+                let card = null;
                 
-                const metrics = Object.entries(section.metrics || {})
-                    .map(([key, value]) => `
-                        <div class="list-item">
-                            <p class="list-item-title">${key}</p>
-                            <p class="list-item-subtitle">${value}</p>
-                        </div>
-                    `).join('');
+                for (let element of cardElements) {
+                    if (element.textContent.trim() === cardTitle) {
+                        card = element.closest('.card');
+                        break;
+                    }
+                }
                 
-                card.innerHTML = `
-                    <div class="card-header">
-                        <h2 class="card-title">${section.title || 'Untitled'}</h2>
-                    </div>
-                    <div class="card-content">
-                        ${metrics}
-                    </div>
-                `;
+                if (!card) return;
                 
-                content.appendChild(card);
+                // Update status if provided
+                if (section.status) {
+                    const statusBadge = card.querySelector('.status-badge');
+                    if (statusBadge) {
+                        statusBadge.textContent = section.status;
+                    }
+                }
+                
+                // Update description if provided
+                if (section.description) {
+                    const description = card.querySelector('.card-description');
+                    if (description) {
+                        description.textContent = section.description;
+                    }
+                }
+                
+                // Update metrics
+                if (section.metrics) {
+                    const listItems = card.querySelectorAll('.list-item');
+                    listItems.forEach(item => {
+                        const title = item.querySelector('.list-item-title').textContent;
+                        if (section.metrics[title] !== undefined) {
+                            const subtitle = item.querySelector('.list-item-subtitle');
+                            if (subtitle) {
+                                subtitle.textContent = section.metrics[title];
+                            }
+                        }
+                    });
+                }
             });
         }
 
@@ -429,6 +447,18 @@
                 } catch (error) {
                     console.error('Error parsing data:', error);
                 }
+            }
+        });
+
+        // Listen for postMessage events
+        window.addEventListener('message', function(event) {
+            try {
+                const data = event.data;
+                if (data && data.data) {
+                    updateDashboard(data.data);
+                }
+            } catch (error) {
+                console.error('Error handling message:', error);
             }
         });
     </script>
