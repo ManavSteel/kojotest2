@@ -377,6 +377,60 @@
                 </div>
             </div>
         </div>
+        <div id="content"></div>
     </div>
+    <script>
+        // Function to update the dashboard with new data
+        function updateDashboard(data) {
+            const content = document.getElementById('content');
+            
+            // Clear existing content
+            content.innerHTML = '';
+            
+            // Add each section
+            data.forEach(section => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                const metrics = Object.entries(section.metrics || {})
+                    .map(([key, value]) => `
+                        <div class="list-item">
+                            <p class="list-item-title">${key}</p>
+                            <p class="list-item-subtitle">${value}</p>
+                        </div>
+                    `).join('');
+                
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h2 class="card-title">${section.title || 'Untitled'}</h2>
+                    </div>
+                    <div class="card-content">
+                        ${metrics}
+                    </div>
+                `;
+                
+                content.appendChild(card);
+            });
+        }
+
+        // Function to parse URL parameters
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // Check for data in URL parameters on page load
+        window.addEventListener('load', function() {
+            const dataParam = getQueryParam('data');
+            if (dataParam) {
+                try {
+                    const decodedData = JSON.parse(decodeURIComponent(dataParam));
+                    updateDashboard(decodedData);
+                } catch (error) {
+                    console.error('Error parsing data:', error);
+                }
+            }
+        });
+    </script>
 </body>
 </html>
