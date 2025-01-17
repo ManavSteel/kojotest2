@@ -382,22 +382,27 @@
     <script>
         // Function to update specific metrics in existing cards
         function updateDashboard(data) {
+            console.log('Received data:', data); // Debug log
             if (!Array.isArray(data)) return;
             
             data.forEach(section => {
                 // Find the existing card for this section
                 const cardTitle = section.title;
-                const cardElements = document.querySelectorAll('.card-title');
+                const cards = document.querySelectorAll('.card');
                 let card = null;
                 
-                for (let element of cardElements) {
-                    if (element.textContent.trim() === cardTitle) {
-                        card = element.closest('.card');
+                for (let c of cards) {
+                    const titleEl = c.querySelector('.card-title');
+                    if (titleEl && titleEl.textContent.trim() === cardTitle) {
+                        card = c;
                         break;
                     }
                 }
                 
-                if (!card) return;
+                if (!card) {
+                    console.log('Card not found for:', cardTitle); // Debug log
+                    return;
+                }
                 
                 // Update status if provided
                 if (section.status) {
@@ -417,15 +422,18 @@
                 
                 // Update metrics
                 if (section.metrics) {
-                    const listItems = card.querySelectorAll('.list-item');
-                    listItems.forEach(item => {
-                        const title = item.querySelector('.list-item-title').textContent;
-                        if (section.metrics[title] !== undefined) {
-                            const subtitle = item.querySelector('.list-item-subtitle');
-                            if (subtitle) {
-                                subtitle.textContent = section.metrics[title];
+                    Object.entries(section.metrics).forEach(([key, value]) => {
+                        const items = card.querySelectorAll('.list-item');
+                        items.forEach(item => {
+                            const titleEl = item.querySelector('.list-item-title');
+                            if (titleEl && titleEl.textContent.trim() === key) {
+                                const subtitleEl = item.querySelector('.list-item-subtitle');
+                                if (subtitleEl) {
+                                    subtitleEl.textContent = value;
+                                    console.log('Updated metric:', key, 'to:', value); // Debug log
+                                }
                             }
-                        }
+                        });
                     });
                 }
             });
@@ -442,7 +450,9 @@
             const dataParam = getQueryParam('data');
             if (dataParam) {
                 try {
+                    console.log('URL parameter found:', dataParam); // Debug log
                     const decodedData = JSON.parse(decodeURIComponent(dataParam));
+                    console.log('Decoded data:', decodedData); // Debug log
                     updateDashboard(decodedData);
                 } catch (error) {
                     console.error('Error parsing data:', error);
